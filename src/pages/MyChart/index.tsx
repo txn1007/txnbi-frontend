@@ -1,8 +1,20 @@
 import { getChartFindMyChart } from '@/services/txnbi/chart';
 import { useModel } from '@@/exports';
-import { Avatar, Card, List, message } from 'antd';
+import {
+  Avatar,
+  Card,
+  Col,
+  Descriptions,
+  Dropdown,
+  List,
+  MenuProps,
+  message,
+  Modal,
+  Row,
+} from 'antd';
 import Search from 'antd/es/input/Search';
 import ReactECharts from 'echarts-for-react';
+
 import React, { useEffect, useState } from 'react';
 
 /**
@@ -18,6 +30,10 @@ const MyChartPage: React.FC = () => {
   // 加载状态，用来控制页面是否加载，默认正在加载
   const [loading, setLoading] = useState<boolean>(true);
 
+  const [isOpenDetail, setIsOpenDetail] = React.useState(false);
+
+  const [chartRef, setChartRef] = useState(null);
+
   const initSearchParams = {
     // 默认第一页
     currentPage: 1,
@@ -26,9 +42,6 @@ const MyChartPage: React.FC = () => {
     token: initialState?.token || '',
     chartName: '',
   };
-
-  console.log(initialState);
-  console.log(currentUser);
 
   const [searchParams, setSearchParams] = useState<API.getChartFindMyChartParams>({
     ...initSearchParams,
@@ -67,6 +80,22 @@ const MyChartPage: React.FC = () => {
   useEffect(() => {
     loadData();
   }, [searchParams]);
+
+  const onMenuClick: MenuProps['onClick'] = (e) => {
+    console.log('click', e);
+  };
+
+  const items = [
+    {
+      key: 'deleteChart',
+      label: '删除',
+    },
+  ];
+
+  const handleCancel = () => {
+    setIsOpenDetail(false);
+    setChartRef(null);
+  };
 
   return (
     <div className="my-chart-page">
@@ -132,23 +161,107 @@ const MyChartPage: React.FC = () => {
           loading={loading}
           dataSource={chartList}
           renderItem={(item) => (
-            <List.Item key={item.chartID}>
-              {/* 用卡片包裹 */}
-              <Card style={{ width: '100%' }}>
-                <List.Item.Meta
-                  // 把当前登录用户信息的头像展示出来
-                  avatar={<Avatar src={currentUser && currentUser.userAvatar} />}
-                  title={item.chartName}
-                  description={item.chartType ? '图表类型：' + item.chartType : undefined}
-                />
-                {/* 在元素的下方增加16像素的外边距 */}
-                <div style={{ marginBottom: 16 }} />
-                <p>{'分析目标：' + item.chartGoal}</p>
-                {/* 在元素的下方增加16像素的外边距 */}
-                <div style={{ marginBottom: 16 }} />
-                <ReactECharts option={item.chartCode && JSON.parse(item.chartCode)} />
-              </Card>
-            </List.Item>
+            <div>
+              <List.Item key={item.chartID}>
+                {/* 用卡片包裹 */}
+                <Card style={{ width: '100%' }}>
+                  <Row wrap={false}>
+                    <Col flex={9}>
+                      <List.Item.Meta
+                        // 把当前登录用户信息的头像展示出来
+                        avatar={
+                          <Avatar src={currentUser && currentUser.userAvatar} size={'large'} />
+                        }
+                        title={'图表名：' + item.chartName}
+                        description={item.chartType ? '图表类型：' + item.chartType : undefined}
+                      />
+                    </Col>
+                    <Col flex={1} push={2}>
+                      <Dropdown.Button
+                        key={'card-button-key' + item.chartID}
+                        menu={{ items, onClick: onMenuClick }}
+                        size={'small'}
+                        onClick={() => {
+                          setIsOpenDetail(true);
+                        }}
+                      >
+                        查看详情
+                      </Dropdown.Button>
+                    </Col>
+                  </Row>
+
+                  {/* 在元素的下方增加16像素的外边距 */}
+                  <div style={{ marginBottom: 16 }} />
+                  <p>{'分析目标：' + item.chartGoal}</p>
+                  {/* 在元素的下方增加16像素的外边距 */}
+                  <div style={{ marginBottom: 16 }} />
+                  <ReactECharts option={item.chartCode && JSON.parse(item.chartCode)} />
+                  <p className={'loading-card'}>{'更新时间：' + item.updateTime}</p>
+                </Card>
+                <Modal
+                  open={isOpenDetail}
+                  onCancel={handleCancel}
+                  footer={null}
+                  width={1000}
+                  centered={true}
+                  getContainer={false}
+                  afterOpenChange={(b) => {
+                    if (b) {
+                      const t = chartRef.getEchartsInstance();
+                      t.setOption(JSON.parse(item.chartCode));
+                    }
+                  }}
+                >
+                  <Descriptions
+                    layout="vertical"
+                    bordered
+                    column={3}
+                    items={[
+                      {
+                        key: '1',
+                        label: '图表名称',
+                        children: item.chartName,
+                      },
+                      {
+                        key: '2',
+                        label: '图表类型',
+                        children: item.chartType,
+                      },
+                      {
+                        key: '5',
+                        label: '更改时间',
+                        children: item.updateTime,
+                      },
+                      {
+                        key: '3',
+                        label: '分析目标',
+                        span: 'filled',
+                        children: item.chartGoal,
+                      },
+                      {
+                        key: '4',
+                        label: '分析结果',
+                        span: 'filled',
+                        children: item.chartResult,
+                      },
+                      {
+                        key: '6',
+                        label: '图表',
+                        span: 'filled',
+                        children: (
+                          <ReactECharts
+                            ref={(e) => {
+                              setChartRef(e);
+                            }}
+                            option={item.chartCode && JSON.parse(item.chartCode)}
+                          />
+                        ),
+                      },
+                    ]}
+                  />
+                </Modal>
+              </List.Item>
+            </div>
           )}
         />
       </div>

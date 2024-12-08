@@ -29,14 +29,35 @@ export async function postChartGen(
     /** 查询目标 */
     goal: string;
   },
+  file?: File,
   options?: { [key: string]: any },
 ) {
+  const formData = new FormData();
+
+  if (file) {
+    formData.append('file', file);
+  }
+
+  Object.keys(body).forEach((ele) => {
+    const item = (body as any)[ele];
+
+    if (item !== undefined && item !== null) {
+      if (typeof item === 'object' && !(item instanceof File)) {
+        if (item instanceof Array) {
+          item.forEach((f) => formData.append(ele, f || ''));
+        } else {
+          formData.append(ele, JSON.stringify(item));
+        }
+      } else {
+        formData.append(ele, item);
+      }
+    }
+  });
+
   return request<API.GenChartResp>('/chart/gen', {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-    },
-    data: body,
+    data: formData,
+    requestType: 'form',
     ...(options || {}),
   });
 }

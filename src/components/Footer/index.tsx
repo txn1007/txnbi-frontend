@@ -5,26 +5,19 @@ import React from 'react';
 const Footer: React.FC = () => {
   return (
     <DefaultFooter
+      copyright={false}
       style={{
         background: 'none',
       }}
       links={[
         {
-          key: 'txn 的智能BI',
-          title: 'txn 的智能BI',
-          href: 'https://pro.ant.design',
-          blankTarget: true,
-        },
-        {
           key: 'github',
-          title: <GithubOutlined />,
-          href: 'https://github.com/ant-design/ant-design-pro',
-          blankTarget: true,
-        },
-        {
-          key: 'txn 的智能BI',
-          title: 'txn 的智能BI',
-          href: 'https://ant.design',
+          title: (
+            <div>
+              <GithubOutlined /> 后端源码
+            </div>
+          ),
+          href: 'https://github.com/txn1007/txnbi-backend',
           blankTarget: true,
         },
       ]}

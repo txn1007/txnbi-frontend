@@ -139,8 +139,8 @@ const AddChart: React.FC = () => {
                 {/* action:当你把文件上传之后，它会把文件上传至哪个接口。
                     这里肯定是调用自己的后端，先不用这个;
                     maxCount={1} 限制文件上传数量为1 */}
-                <Upload name="file" maxCount={1}>
-                  <Button icon={<UploadOutlined />}>上传 CSV 文件</Button>
+                <Upload name="file" maxCount={1} accept={'.xls,.xlsx'}>
+                  <Button icon={<UploadOutlined />}>上传 Excel 文件</Button>
                 </Upload>
               </Form.Item>
               {/* offset设置和label标签一样的宽度，这样就能保持对齐；
@@ -168,20 +168,26 @@ const AddChart: React.FC = () => {
           <Card title="分析结论">
             {/* 如果分析结论存在，就展示分析结论；
                 不存在则显示'请先在左侧进行提交' */}
-            {chart?.genResult ?? <div>请先在左侧进行提交</div>}
+            {!submitting && !option && <div>请先在左侧进行提交</div>}
+            {chart?.genResult}
             {/* 提交中，还未返回结果，分析结论就显示加载中的组件 */}
-            <Spin spinning={submitting} />
+            <div className={'loading-card'}>
+              <Spin spinning={submitting} size={'large'} />
+            </div>
           </Card>
           {/* 加一个间距 */}
           <Divider />
           <Card title="可视化图表">
             {/* 如果它存在，才渲染这个组件 */}
+            {!submitting && !option && <div>请先在左侧进行提交</div>}
             {
               // 后端返回的代码是字符串，不是对象，用JSON.parse解析成对象
-              option ? <ReactECharts option={option} /> : <div>请先在左侧进行提交</div>
+              option && <ReactECharts option={option} />
             }
             {/* 提交中，还未返回结果，图表就显示加载中的组件 */}
-            <Spin spinning={submitting} />
+            <div className={'loading-card'}>
+              <Spin spinning={submitting} size={'large'} wrapperClassName={'loading-card'} />
+            </div>
           </Card>
         </Col>
       </Row>

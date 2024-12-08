@@ -29,6 +29,21 @@ export async function postUserLogin(body: API.UserLoginReq, options?: { [key: st
   });
 }
 
+/** 用户退出登陆接口 用户自身详情接口 POST /user/loginOut */
+export async function postUserLoginOut(
+  // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
+  params: API.postUserLoginOutParams,
+  options?: { [key: string]: any },
+) {
+  return request<API.UserLoginOutResp>('/user/loginOut', {
+    method: 'POST',
+    params: {
+      ...params,
+    },
+    ...(options || {}),
+  });
+}
+
 /** 用户注册接口 登陆界面中的用户注册接口 POST /user/register */
 export async function postUserRegister(
   body: API.UserRegisterReq,

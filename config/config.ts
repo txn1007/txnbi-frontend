@@ -72,9 +72,9 @@ export default defineConfig({
    * @name layout 插件
    * @doc https://umijs.org/docs/max/layout-menu
    */
-  title: 'txn 的智能BI',
   layout: {
-    locale: true,
+    locale: false,
+    title: 'txn 的智能BI',
     ...defaultSettings,
   },
   /**

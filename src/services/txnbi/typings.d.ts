@@ -6,14 +6,13 @@ declare namespace API {
     chartName?: string;
     chartResult?: string;
     chartType?: string;
+    updateTime?: string;
   };
 
   type CurrentUserDetailResp = {
-    /** required: true
-example: 登陆成功 */
+    /** required: true */
     message?: string;
-    /** required: true
-example: 0 */
+    /** required: true */
     statusCode?: number;
     userInfoV0?: UserInfoV0;
   };
@@ -43,6 +42,10 @@ example: 0 */
     token: string;
   };
 
+  type postUserLoginOutParams = {
+    token: string;
+  };
+
   type UserInfoV0 = {
     /** 创建时间 */
     createTime?: string;
@@ -60,6 +63,13 @@ example: 0 */
     userRole?: string;
   };
 
+  type UserLoginOutResp = {
+    /** required: true */
+    message?: string;
+    /** required: true */
+    statusCode?: number;
+  };
+
   type UserLoginReq = {
     account: string;
     password: string;
@@ -73,15 +83,14 @@ example: 0 */
 
   type UserRegisterReq = {
     account: string;
+    inviteCode: string;
     password: string;
   };
 
   type UserRegisterResp = {
-    /** required: true
-example: 登陆成功 */
+    /** required: true */
     message?: string;
-    /** required: true
-example: 0 */
+    /** required: true */
     statusCode?: number;
   };
 }

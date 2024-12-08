@@ -1,12 +1,11 @@
 import { Footer } from '@/components';
-import { getUserCurrentUserDetail, postUserLogin } from '@/services/txnbi/user';
-import { LockOutlined, UserOutlined } from '@ant-design/icons';
+import { postUserRegister } from '@/services/txnbi/user';
+import { CoffeeOutlined, LockOutlined, UserOutlined } from '@ant-design/icons';
 import { LoginForm, ProFormText } from '@ant-design/pro-components';
-import { Helmet, history, Link, useModel } from '@umijs/max';
+import { Helmet, history, Link } from '@umijs/max';
 import { message, Tabs } from 'antd';
 import { createStyles } from 'antd-style';
 import React, { useState } from 'react';
-import { flushSync } from 'react-dom';
 import Settings from '../../../../config/defaultSettings';
 
 const useStyles = createStyles(({ token }) => {
@@ -45,47 +44,24 @@ const useStyles = createStyles(({ token }) => {
   };
 });
 
-const Login: React.FC = () => {
+const Register: React.FC = () => {
   const [type, setType] = useState<string>('account');
-  const { setInitialState } = useModel('@@initialState');
   const { styles } = useStyles();
 
-  const fetchUserInfo = async () => {
-    // console.log(initialState);
-    const res = await getUserCurrentUserDetail({ token: localStorage.getItem('token') as string });
-    const userInfo = res.userInfoV0;
-    if (userInfo) {
-      flushSync(() => {
-        setInitialState((s) => ({
-          ...s,
-          currentUser: userInfo,
-        }));
-      });
-    }
-  };
-
-  const handleSubmit = async (values: API.UserLoginReq) => {
+  const handleSubmit = async (values: API.UserRegisterReq) => {
     try {
-      // 登录
-      const res = await postUserLogin(values);
+      // 注册
+      const res = await postUserRegister(values);
       if (res.statusCode === 0) {
-        flushSync(() => {
-          setInitialState((s) => ({
-            ...s,
-            token: res.token,
-          }));
-          localStorage.setItem('token', res.token as string);
-        });
-        const defaultLoginSuccessMessage = '登录成功！';
+        const defaultLoginSuccessMessage = '注册成功！';
         message.success(defaultLoginSuccessMessage);
-        await fetchUserInfo();
         const urlParams = new URL(window.location.href).searchParams;
         history.push(urlParams.get('redirect') || '/');
         return;
       }
       message.error(res.message);
     } catch (error) {
-      const defaultLoginFailureMessage = '登录失败，请重试！';
+      const defaultLoginFailureMessage = '注册失败，请重试！';
       console.log(error);
       message.error(defaultLoginFailureMessage);
     }
@@ -94,7 +70,7 @@ const Login: React.FC = () => {
     <div className={styles.container}>
       <Helmet>
         <title>
-          {'登录'}- {Settings.title}
+          {'注册'}- {Settings.title}
         </title>
       </Helmet>
       <div
@@ -108,16 +84,11 @@ const Login: React.FC = () => {
             minWidth: 280,
             maxWidth: '75vw',
           }}
-          logo={
-            <img
-              alt="logo"
-              src="https://tiktokk-1331222828.cos.ap-guangzhou.myqcloud.com/txnbi-logo.svg"
-            />
-          }
+          logo={<img alt="logo" src="/logo.svg" />}
           title="txn 的智能BI"
           subTitle={'欢迎访问 txn 的智能BI'}
           onFinish={async (values) => {
-            await handleSubmit(values as API.UserLoginReq);
+            await handleSubmit(values as API.UserRegisterReq);
           }}
         >
           <Tabs
@@ -127,7 +98,7 @@ const Login: React.FC = () => {
             items={[
               {
                 key: 'account',
-                label: '账户密码登录',
+                label: '用户名注册',
               },
             ]}
           />
@@ -161,6 +132,21 @@ const Login: React.FC = () => {
                   },
                 ]}
               />
+
+              <ProFormText
+                name="inviteCode"
+                fieldProps={{
+                  size: 'large',
+                  prefix: <CoffeeOutlined />,
+                }}
+                placeholder={'请输入邀请码'}
+                rules={[
+                  {
+                    required: true,
+                    message: '邀请码是必填项！',
+                  },
+                ]}
+              />
             </>
           )}
           <div
@@ -168,7 +154,7 @@ const Login: React.FC = () => {
               marginBottom: 24,
             }}
           >
-            <Link to="/user/register">注册</Link>
+            <Link to="/user/login">登陆</Link>
           </div>
         </LoginForm>
       </div>
@@ -176,4 +162,4 @@ const Login: React.FC = () => {
     </div>
   );
 };
-export default Login;
+export default Register;

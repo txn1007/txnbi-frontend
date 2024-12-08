@@ -16,7 +16,6 @@ export async function getInitialState(): Promise<{
 }> {
   const fetchUserInfo = async () => {
     try {
-      console.log(localStorage.getItem('token'));
       return await getUserCurrentUserDetail({ token: localStorage.getItem('token') });
     } catch (error) {
       history.push(loginPath);
@@ -35,6 +34,7 @@ export async function getInitialState(): Promise<{
 // ProLayout 支持的api https://procomponents.ant.design/components/layout
 export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) => {
   return {
+    logo: 'https://tiktokk-1331222828.cos.ap-guangzhou.myqcloud.com/txnbi-logo.svg',
     actionsRender: () => [<Question key="doc" />],
     avatarProps: {
       src: initialState?.currentUser?.userAvatar,
