@@ -1,11 +1,13 @@
-import { AvatarDropdown, AvatarName, Footer, Question } from '@/components';
+import { AvatarDropdown, AvatarName, Footer } from '@/components';
 import { getUserCurrentUserDetail } from '@/services/txnbi/user';
 import { SettingDrawer } from '@ant-design/pro-components';
+
 import type { RunTimeLayoutConfig } from '@umijs/max';
 import { history } from '@umijs/max';
 import { errorConfig } from './requestErrorConfig';
 const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/user/login';
+const examplePath = '/ExampleChart';
 
 /**
  * @see  https://umijs.org/zh-CN/plugins/plugin-initial-state
@@ -16,17 +18,42 @@ export async function getInitialState(): Promise<{
 }> {
   const fetchUserInfo = async () => {
     try {
-      return await getUserCurrentUserDetail({ token: localStorage.getItem('token') });
+      const token = localStorage.getItem('token');
+      if (token === null) {
+        return;
+      }
+      return await getUserCurrentUserDetail({ token: token });
     } catch (error) {
       history.push(loginPath);
     }
     return undefined;
   };
-  // 如果不是登录页面，执行
+
+  // 如果不是登录或展示页页面，执行
   const { location } = history;
+  if (
+    location.pathname === examplePath &&
+    (localStorage.getItem('token') === null || localStorage.getItem('token') === '')
+  ) {
+    const visitor: API.UserInfoV0 = {
+      id: 0,
+      userName: '游客',
+      userRole: 'visitor',
+      userAvatar: 'https://tiktokk-1331222828.cos.ap-guangzhou.myqcloud.com/avatar/avatar-tem.jpg',
+    };
+    return { currentUser: visitor, token: '' };
+  }
   if (location.pathname !== loginPath) {
     const data = await fetchUserInfo();
-    return { currentUser: data.userInfoV0, token: localStorage.getItem('token') };
+    // 获取可能存在的 inviteCode
+    const queryParams = new URLSearchParams(location.search);
+    const inviteCode = queryParams.get('inviteCode');
+    localStorage.setItem('inviteCode', inviteCode || '');
+    console.log(inviteCode);
+    return {
+      currentUser: data.userInfoV0,
+      token: localStorage.getItem('token'),
+    };
   }
   return {};
 }
@@ -35,7 +62,7 @@ export async function getInitialState(): Promise<{
 export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) => {
   return {
     logo: 'https://tiktokk-1331222828.cos.ap-guangzhou.myqcloud.com/txnbi-logo.svg',
-    actionsRender: () => [<Question key="doc" />],
+    // actionsRender: () => [<Question key="doc" />],
     avatarProps: {
       src: initialState?.currentUser?.userAvatar,
       title: <AvatarName />,
@@ -49,8 +76,11 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
     footerRender: () => <Footer />,
     onPageChange: () => {
       const { location } = history;
-      // 如果没有登录，重定向到 login
-      if (!initialState?.currentUser && location.pathname !== loginPath) {
+      // 如果没有登录，或身份是游客，则重定向到 login
+      if (
+        (!initialState?.currentUser || initialState?.currentUser?.userRole === 'visitor') &&
+        !(location.pathname === loginPath || location.pathname === examplePath)
+      ) {
         history.push(loginPath);
       }
     },

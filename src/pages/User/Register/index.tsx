@@ -48,6 +48,7 @@ const Register: React.FC = () => {
   const [type, setType] = useState<string>('account');
   const { styles } = useStyles();
 
+  console.log(localStorage.getItem('inviteCode'));
   const handleSubmit = async (values: API.UserRegisterReq) => {
     try {
       // 注册
@@ -89,6 +90,9 @@ const Register: React.FC = () => {
           subTitle={'欢迎访问 txn 的智能BI'}
           onFinish={async (values) => {
             await handleSubmit(values as API.UserRegisterReq);
+          }}
+          initialValues={{
+            inviteCode: localStorage.getItem('inviteCode') || '', // 设置默认值
           }}
         >
           <Tabs
@@ -138,14 +142,9 @@ const Register: React.FC = () => {
                 fieldProps={{
                   size: 'large',
                   prefix: <CoffeeOutlined />,
+                  defaultValue: localStorage.getItem('inviteCode') || '',
                 }}
                 placeholder={'请输入邀请码'}
-                rules={[
-                  {
-                    required: true,
-                    message: '邀请码是必填项！',
-                  },
-                ]}
               />
             </>
           )}

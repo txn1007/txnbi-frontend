@@ -2,6 +2,14 @@
 /* eslint-disable */
 import { request } from '@umijs/max';
 
+/** 用户获取自己的图表数据接口 用户获取自己的图表数据接口 GET /chart/exampleChart */
+export async function getChartExampleChart(options?: { [key: string]: any }) {
+  return request<API.ExampleChartResp>('/chart/exampleChart', {
+    method: 'GET',
+    ...(options || {}),
+  });
+}
+
 /** 用户获取自己的图表数据接口 用户获取自己的图表数据接口 GET /chart/findMyChart */
 export async function getChartFindMyChart(
   // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
@@ -58,6 +66,24 @@ export async function postChartGen(
     method: 'POST',
     data: formData,
     requestType: 'form',
+    ...(options || {}),
+  });
+}
+
+/** 删除图表数据接口 删除图表数据接口 POST /chart/myChartDel */
+export async function postChartMyChartDel(
+  body: {
+    chartID: number;
+    token: string;
+  },
+  options?: { [key: string]: any },
+) {
+  return request<API.DeleteMyChartResp>('/chart/myChartDel', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    data: body,
     ...(options || {}),
   });
 }

@@ -17,6 +17,18 @@ declare namespace API {
     userInfoV0?: UserInfoV0;
   };
 
+  type DeleteMyChartResp = {
+    message?: string;
+    statusCode?: number;
+  };
+
+  type ExampleChartResp = {
+    charts?: ChartInfoV0[];
+    message?: string;
+    statusCode?: number;
+    total?: number;
+  };
+
   type FindMyChartResp = {
     charts?: ChartInfoV0[];
     message?: string;
