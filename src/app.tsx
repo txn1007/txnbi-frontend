@@ -1,9 +1,10 @@
 import { AvatarDropdown, AvatarName, Footer } from '@/components';
-import { getUserCurrentUserDetail } from '@/services/txnbi/user';
+import { getUserAuthCurrentUserDetail } from '@/services/txnbi/user';
 import { SettingDrawer } from '@ant-design/pro-components';
 
 import type { RunTimeLayoutConfig } from '@umijs/max';
 import { history } from '@umijs/max';
+import { message } from 'antd';
 import { errorConfig } from './requestErrorConfig';
 const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/user/login';
@@ -22,8 +23,9 @@ export async function getInitialState(): Promise<{
       if (token === null) {
         return;
       }
-      return await getUserCurrentUserDetail({ token: token });
+      return await getUserAuthCurrentUserDetail({ token: token });
     } catch (error) {
+      localStorage.removeItem('token');
       history.push(loginPath);
     }
     return undefined;
@@ -49,7 +51,6 @@ export async function getInitialState(): Promise<{
     const queryParams = new URLSearchParams(location.search);
     const inviteCode = queryParams.get('inviteCode');
     localStorage.setItem('inviteCode', inviteCode || '');
-    console.log(inviteCode);
     return {
       currentUser: data.userInfoV0,
       token: localStorage.getItem('token'),
@@ -81,6 +82,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
         (!initialState?.currentUser || initialState?.currentUser?.userRole === 'visitor') &&
         !(location.pathname === loginPath || location.pathname === examplePath)
       ) {
+        message.warning('您访问的资源需要登陆，请登录！');
         history.push(loginPath);
       }
     },
@@ -137,6 +139,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
  * @doc https://umijs.org/docs/max/request#配置
  */
 export const request = {
+  // baseURL: 'https://txn88.com',
   baseURL: 'http://localhost:8080',
   ...errorConfig,
 };

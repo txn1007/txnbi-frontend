@@ -1,4 +1,4 @@
-import { postUserLoginOut } from '@/services/txnbi/user';
+import { postUserAuthLoginOut } from '@/services/txnbi/user';
 import { LogoutOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
 import { history, useModel } from '@umijs/max';
 import { Spin } from 'antd';
@@ -45,7 +45,7 @@ export const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu, childre
   const { initialState, setInitialState } = useModel('@@initialState');
 
   const loginOut = async () => {
-    await postUserLoginOut({ token: initialState?.token || '' });
+    await postUserAuthLoginOut({ token: initialState?.token || '' });
     const { search, pathname } = window.location;
     const urlParams = new URL(window.location.href).searchParams;
     /** 此方法会跳转到 redirect 参数所在的位置 */

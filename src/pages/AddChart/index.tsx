@@ -1,4 +1,4 @@
-import { postChartGen } from '@/services/txnbi/chart';
+import { postChartAuthGen } from '@/services/txnbi/chart';
 import { useModel } from '@@/exports';
 import { UploadOutlined } from '@ant-design/icons';
 import {
@@ -57,7 +57,7 @@ const AddChart: React.FC = () => {
     try {
       // 需要取到上传的原始数据file→file→originFileObj(原始数据)
       console.log(params);
-      const res = await postChartGen({ ...params });
+      const res = await postChartAuthGen({ ...params });
       // 正常情况下，如果没有返回值就分析失败，有，就分析成功
       if (res.statusCode === 1) {
         message.error('分析失败');
@@ -110,15 +110,15 @@ const AddChart: React.FC = () => {
               <Form.Item
                 name="goal"
                 label="分析目标"
-                rules={[{ required: true, message: '请输入分析目标!' }]}
+                rules={[{ required: true, message: '请输入2～255字的分析目标!' }]}
               >
                 {/* placeholder文本框内的提示语 */}
-                <TextArea placeholder="请输入你的分析需求，比如：分析网站用户的增长情况" />
+                <TextArea placeholder="请输入2～255字的分析需求，比如：分析网站用户的增长情况" />
               </Form.Item>
 
               {/* 还要输入图表名称 */}
               <Form.Item name="chartName" label="图表名称">
-                <Input placeholder="请输入图表名称" />
+                <Input placeholder="请输入1～127字的图表名称" />
               </Form.Item>
 
               {/* 图表类型是非必填，所以不做校验 */}

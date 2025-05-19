@@ -57,7 +57,7 @@ const Register: React.FC = () => {
         const defaultLoginSuccessMessage = '注册成功！';
         message.success(defaultLoginSuccessMessage);
         const urlParams = new URL(window.location.href).searchParams;
-        history.push(urlParams.get('redirect') || '/');
+        history.push(urlParams.get('redirect') || '/user/login');
         return;
       }
       message.error(res.message);
@@ -114,7 +114,7 @@ const Register: React.FC = () => {
                   size: 'large',
                   prefix: <UserOutlined />,
                 }}
-                placeholder={'请输入用户名'}
+                placeholder={'请输入6～16位用户名'}
                 rules={[
                   {
                     required: true,
@@ -128,7 +128,7 @@ const Register: React.FC = () => {
                   size: 'large',
                   prefix: <LockOutlined />,
                 }}
-                placeholder={'请输入密码'}
+                placeholder={'请输入8～24位的密码'}
                 rules={[
                   {
                     required: true,
@@ -144,7 +144,7 @@ const Register: React.FC = () => {
                   prefix: <CoffeeOutlined />,
                   defaultValue: localStorage.getItem('inviteCode') || '',
                 }}
-                placeholder={'请输入邀请码'}
+                placeholder={'请输入2～16位邀请码'}
               />
             </>
           )}

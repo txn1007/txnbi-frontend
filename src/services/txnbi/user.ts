@@ -2,14 +2,29 @@
 /* eslint-disable */
 import { request } from '@umijs/max';
 
-/** 用户自身详情接口 用户自身详情接口 GET /user/CurrentUserDetail */
-export async function getUserCurrentUserDetail(
+/** 用户自身详情接口 用户自身详情接口 GET /user/auth/currentUserDetail */
+export async function getUserAuthCurrentUserDetail(
   // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
-  params: API.getUserCurrentUserDetailParams,
+  params: API.getUserAuthCurrentUserDetailParams,
   options?: { [key: string]: any },
 ) {
-  return request<API.CurrentUserDetailResp>('/user/CurrentUserDetail', {
+  return request<API.CurrentUserDetailResp>('/user/auth/currentUserDetail', {
     method: 'GET',
+    params: {
+      ...params,
+    },
+    ...(options || {}),
+  });
+}
+
+/** 用户退出登陆接口 用户自身详情接口 POST /user/auth/loginOut */
+export async function postUserAuthLoginOut(
+  // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
+  params: API.postUserAuthLoginOutParams,
+  options?: { [key: string]: any },
+) {
+  return request<API.UserLoginOutResp>('/user/auth/loginOut', {
+    method: 'POST',
     params: {
       ...params,
     },
@@ -25,21 +40,6 @@ export async function postUserLogin(body: API.UserLoginReq, options?: { [key: st
       'Content-Type': 'application/json',
     },
     data: body,
-    ...(options || {}),
-  });
-}
-
-/** 用户退出登陆接口 用户自身详情接口 POST /user/loginOut */
-export async function postUserLoginOut(
-  // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
-  params: API.postUserLoginOutParams,
-  options?: { [key: string]: any },
-) {
-  return request<API.UserLoginOutResp>('/user/loginOut', {
-    method: 'POST',
-    params: {
-      ...params,
-    },
     ...(options || {}),
   });
 }

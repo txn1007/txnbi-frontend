@@ -1,4 +1,3 @@
-import { GithubOutlined } from '@ant-design/icons';
 import { DefaultFooter } from '@ant-design/pro-components';
 import React from 'react';
 
@@ -12,11 +11,7 @@ const Footer: React.FC = () => {
       links={[
         {
           key: 'github',
-          title: (
-            <div>
-              <GithubOutlined /> 后端源码
-            </div>
-          ),
+          title: <div>{/* <GithubOutlined /> 后端源码 */}</div>,
           href: 'https://github.com/txn1007/txnbi-backend',
           blankTarget: true,
         },

@@ -1,5 +1,5 @@
 import { Footer } from '@/components';
-import { getUserCurrentUserDetail, postUserLogin } from '@/services/txnbi/user';
+import { getUserAuthCurrentUserDetail, postUserLogin } from '@/services/txnbi/user';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { LoginForm, ProFormText } from '@ant-design/pro-components';
 import { Helmet, history, Link, useModel } from '@umijs/max';
@@ -52,8 +52,11 @@ const Login: React.FC = () => {
 
   const fetchUserInfo = async () => {
     // console.log(initialState);
-    const res = await getUserCurrentUserDetail({ token: localStorage.getItem('token') as string });
+    const res = await getUserAuthCurrentUserDetail({
+      token: localStorage.getItem('token') as string,
+    });
     const userInfo = res.userInfoV0;
+    console.log(userInfo);
     if (userInfo) {
       flushSync(() => {
         setInitialState((s) => ({
@@ -139,7 +142,7 @@ const Login: React.FC = () => {
                   size: 'large',
                   prefix: <UserOutlined />,
                 }}
-                placeholder={'请输入用户名'}
+                placeholder={'请输入6~16位的用户名'}
                 rules={[
                   {
                     required: true,
@@ -153,7 +156,7 @@ const Login: React.FC = () => {
                   size: 'large',
                   prefix: <LockOutlined />,
                 }}
-                placeholder={'请输入密码'}
+                placeholder={'请输入8～24位的密码'}
                 rules={[
                   {
                     required: true,

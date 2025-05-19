@@ -135,6 +135,7 @@ export default defineConfig({
     // },
     {
       requestLibPath: "import { request } from '@umijs/max'",
+      // schemaPath: 'https://txn88.com/swagger/doc.json',
       schemaPath: 'http://localhost:8080/swagger/doc.json',
       projectName: 'txnbi',
       mock: false,

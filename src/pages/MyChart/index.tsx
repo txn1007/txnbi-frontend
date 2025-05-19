@@ -1,4 +1,4 @@
-import { getChartFindMyChart, postChartMyChartDel } from '@/services/txnbi/chart';
+import { getChartAuthFindMyChart, postChartAuthMyChartDel } from '@/services/txnbi/chart';
 import { useModel } from '@@/exports';
 import { Avatar, Card, Col, Descriptions, Dropdown, List, message, Modal, Row } from 'antd';
 import Search from 'antd/es/input/Search';
@@ -34,7 +34,7 @@ const MyChartPage: React.FC = () => {
     chartName: '',
   };
 
-  const [searchParams, setSearchParams] = useState<API.getChartFindMyChartParams>({
+  const [searchParams, setSearchParams] = useState<API.getChartAuthFindMyChartParams>({
     ...initSearchParams,
   });
 
@@ -42,7 +42,7 @@ const MyChartPage: React.FC = () => {
     // 获取数据中,还在加载中,把loading设置为true
     setLoading(true);
     try {
-      const res = await getChartFindMyChart(searchParams);
+      const res = await getChartAuthFindMyChart(searchParams);
       if (res.statusCode === 0) {
         setChartList(res.charts ?? []);
 
@@ -99,7 +99,7 @@ const MyChartPage: React.FC = () => {
     try {
       // 需要取到上传的原始数据file→file→originFileObj(原始数据)
       console.log(params);
-      const res = await postChartMyChartDel({ ...params });
+      const res = await postChartAuthMyChartDel({ ...params });
       // 正常情况下，如果没有返回值就分析失败，有，就分析成功
       if (res.statusCode === 1) {
         message.error('删除失败');
